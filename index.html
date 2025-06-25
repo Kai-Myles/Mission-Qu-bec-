@@ -2,14 +2,40 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mission Québec! - Jeu de français 7e année</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission Québec!</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Mission Québec! 🇨🇦🍁</h1>
-    <div id="game-container">
+    <!-- HOME SCREEN -->
+    <div id="home-screen">
+      <h1>🎯 Mission Québec!</h1>
+      <button class="btn" onclick="startGameSetup()">Jouer</button>
+    </div>
+
+    <!-- LEVEL SELECTION -->
+    <div id="level-screen" class="hidden">
+      <h2>Combien de niveaux veux-tu jouer?</h2>
+      <div class="btn-group">
+        <button class="btn" onclick="selectLevelAmount(5)">5</button>
+        <button class="btn" onclick="selectLevelAmount(10)">10</button>
+        <button class="btn" onclick="selectLevelAmount(15)">15</button>
+      </div>
+    </div>
+
+    <!-- DIFFICULTY SELECTION -->
+    <div id="difficulty-screen" class="hidden">
+      <h2>Choisis la difficulté</h2>
+      <div class="btn-group">
+        <button class="btn" onclick="startGame('facile')">Facile</button>
+        <button class="btn" onclick="startGame('moyen')">Moyen</button>
+        <button class="btn" onclick="startGame('difficile')">Difficile</button>
+      </div>
+    </div>
+
+    <!-- GAME -->
+    <div id="game-container" class="hidden">
       <div id="timer-container">Temps restant : <span id="timer">20</span> sec</div>
       <div id="question-container"></div>
       <div id="answers-container"></div>
