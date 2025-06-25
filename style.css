@@ -1,22 +1,21 @@
-/* General Styles */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background: #f0f4f8;
-  display: flex;
+}
+
+.page {
+  display: none;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding: 30px;
+  text-align: center;
 }
 
-.container {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 90%;
-  max-width: 600px;
+.page.active {
+  display: flex;
 }
 
 h1, h2 {
@@ -28,77 +27,60 @@ h1, h2 {
   color: white;
   border: none;
   padding: 12px 25px;
-  border-radius: 15px;
+  border-radius: 12px;
   font-size: 1rem;
   margin: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s ease;
 }
 
 .btn:hover {
   background-color: #145231;
 }
 
-.btn:disabled {
-  background-color: #b5cbb7;
-  cursor: not-allowed;
-}
-
 .btn-group {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
   gap: 15px;
-}
-
-/* Game Section */
-#question-container {
-  font-size: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-.answer-btn {
-  background-color: #e6f0ea;
-  border: 2px solid #1b4d3e;
-  padding: 12px;
-  border-radius: 12px;
-  margin: 5px 0;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.answer-btn:hover {
-  background-color: #c6decf;
-}
-
-#text-answer {
-  padding: 10px;
-  width: 100%;
-  margin: 10px 0;
-  font-size: 1rem;
-  border-radius: 12px;
-  border: 2px solid #1b4d3e;
+.btn.back {
+  background-color: #888;
 }
 
 #timer-container {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
-#timer {
-  font-weight: bold;
+#timer.green {
   color: green;
 }
-
 #timer.yellow {
   color: orange;
 }
-
 #timer.red {
   color: red;
 }
 
-.hidden {
-  display: none;
+#question-container {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  max-width: 600px;
 }
 
+#answers-container button {
+  background-color: #e6f0ea;
+  border: 2px solid #1b4d3e;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#answers-container button:hover {
+  background-color: #c6decf;
+}
