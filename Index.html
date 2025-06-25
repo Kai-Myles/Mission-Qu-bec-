@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mission Québec! - Jeu de français 7e année</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Mission Québec! 🇨🇦🍁</h1>
+    <div id="game-container">
+      <div id="timer-container">Temps restant : <span id="timer">20</span> sec</div>
+      <div id="question-container"></div>
+      <div id="answers-container"></div>
+      <input type="text" id="text-answer" placeholder="Écris ta réponse ici..." style="display:none;" />
+      <button id="submit-text-btn" class="btn" style="display:none;" disabled>Valider</button>
+      <button id="next-btn" class="btn" disabled>Suivant</button>
+      <div id="feedback-container"></div>
+      <div id="score-container"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
