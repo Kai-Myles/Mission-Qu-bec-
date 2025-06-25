@@ -1,67 +1,41 @@
-let allQuestions = {
+// Page navigation
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+}
+
+// Game logic
+let questions = {
   facile: [
-    {
-      question: "Quelle est la capitale du Québec?",
-      answers: ["Montréal", "Québec", "Ottawa"],
-      correct: "Québec"
-    },
-    {
-      question: "Comment dit-on 'dog' en français?",
-      answers: ["chat", "chien", "oiseau"],
-      correct: "chien"
-    }
+    { question: "Comment dit-on 'apple' en français?", answers: ["pomme", "poire", "orange"], correct: "pomme" },
+    { question: "Quelle est la capitale du Québec?", answers: ["Québec", "Montréal", "Toronto"], correct: "Québec" }
   ],
   moyen: [
-    {
-      question: "Complète : Je _______ une pomme.",
-      answers: ["mange", "manges", "mangent"],
-      correct: "mange"
-    },
-    {
-      question: "Quelle phrase est correcte?",
-      answers: ["Je suis faim", "J'ai faim", "Je faim"],
-      correct: "J'ai faim"
-    }
+    { question: "Complète : Je ______ une pomme.", answers: ["mange", "mangent", "manges"], correct: "mange" },
+    { question: "Quelle phrase est correcte ?", answers: ["J’ai faim", "Je suis faim", "Je avoir faim"], correct: "J’ai faim" }
   ],
   difficile: [
-    {
-      question: "Quelle est la bonne conjugaison du verbe 'aller' au futur (je)?",
-      answers: ["je vais", "j'irai", "j'allerai"],
-      correct: "j'irai"
-    },
-    {
-      question: "Complète : Si j'avais le temps, je _______ un gâteau.",
-      answers: ["ferais", "fais", "fait"],
-      correct: "ferais"
-    }
+    { question: "Conjugue 'aller' au futur (je)", answers: ["j’irai", "je vais", "j’allerai"], correct: "j’irai" },
+    { question: "Complète : Si j’avais le temps, je ______ un gâteau.", answers: ["ferais", "fais", "fait"], correct: "ferais" }
   ]
 };
 
 let selectedQuestions = [];
 let questionIndex = 0;
+let questionCount = 5;
 let score = 0;
 let timer;
 let timeLeft = 20;
 
-function startGameSetup() {
-  document.getElementById("home-screen").classList.add("hidden");
-  document.getElementById("level-screen").classList.remove("hidden");
-}
-
-let questionCount = 5;
-
-function selectLevelAmount(amount) {
+function selectLevel(amount) {
   questionCount = amount;
-  document.getElementById("level-screen").classList.add("hidden");
-  document.getElementById("difficulty-screen").classList.remove("hidden");
+  goToPage('difficulty-page');
 }
 
 function startGame(difficulty) {
-  // Mix and take X questions from the selected difficulty
-  selectedQuestions = [...allQuestions[difficulty]];
+  goToPage('game-page');
+  selectedQuestions = [...questions[difficulty]];
   selectedQuestions = selectedQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
-  document.getElementById("difficulty-screen").classList.add("hidden");
-  document.getElementById("game-container").classList.remove("hidden");
   questionIndex = 0;
   score = 0;
   showQuestion();
@@ -70,19 +44,17 @@ function startGame(difficulty) {
 function showQuestion() {
   clearInterval(timer);
   timeLeft = 20;
-  updateTimerDisplay();
+  updateTimer();
 
-  let q = selectedQuestions[questionIndex];
+  const q = selectedQuestions[questionIndex];
   document.getElementById("question-container").innerText = q.question;
 
   const answersContainer = document.getElementById("answers-container");
   answersContainer.innerHTML = "";
-
-  q.answers.forEach((answer) => {
-    let btn = document.createElement("button");
-    btn.innerText = answer;
-    btn.classList.add("answer-btn");
-    btn.onclick = () => selectAnswer(btn, answer === q.correct);
+  q.answers.forEach(ans => {
+    const btn = document.createElement("button");
+    btn.innerText = ans;
+    btn.onclick = () => selectAnswer(btn, ans === q.correct);
     answersContainer.appendChild(btn);
   });
 
@@ -91,14 +63,14 @@ function showQuestion() {
   startTimer();
 }
 
-function selectAnswer(button, correct) {
+function selectAnswer(button, isCorrect) {
   clearInterval(timer);
-  const buttons = document.querySelectorAll(".answer-btn");
+  const buttons = document.querySelectorAll("#answers-container button");
   buttons.forEach(btn => btn.disabled = true);
 
-  if (correct) {
+  if (isCorrect) {
     button.style.backgroundColor = "#2ecc71";
-    document.getElementById("feedback-container").innerText = "Bonne réponse! 🎉";
+    document.getElementById("feedback-container").innerText = "Bonne réponse!";
     score++;
   } else {
     button.style.backgroundColor = "#e74c3c";
@@ -109,23 +81,22 @@ function selectAnswer(button, correct) {
 }
 
 function startTimer() {
-  updateTimerDisplay();
   timer = setInterval(() => {
     timeLeft--;
-    updateTimerDisplay();
+    updateTimer();
     if (timeLeft <= 0) {
       clearInterval(timer);
       document.getElementById("feedback-container").innerText = "Temps écoulé!";
-      document.querySelectorAll(".answer-btn").forEach(btn => btn.disabled = true);
+      document.querySelectorAll("#answers-container button").forEach(btn => btn.disabled = true);
       document.getElementById("next-btn").disabled = false;
     }
   }, 1000);
 }
 
-function updateTimerDisplay() {
+function updateTimer() {
   const timerEl = document.getElementById("timer");
   timerEl.innerText = timeLeft;
-  timerEl.className = ""; // reset
+  timerEl.className = "";
 
   if (timeLeft <= 5) {
     timerEl.classList.add("red");
@@ -141,14 +112,13 @@ document.getElementById("next-btn").addEventListener("click", () => {
   if (questionIndex < selectedQuestions.length) {
     showQuestion();
   } else {
-    showFinalScore();
+    endGame();
   }
 });
 
-function showFinalScore() {
-  document.getElementById("game-container").innerHTML = `
-    <h2>Mission terminée! 🎉</h2>
-    <p>Tu as eu <strong>${score}</strong> sur <strong>${selectedQuestions.length}</strong> bonnes réponses.</p>
-    <button class="btn" onclick="location.reload()">Rejouer</button>
-  `;
+function endGame() {
+  document.getElementById("question-container").innerHTML = `<h2>Bravo! 🎉</h2>`;
+  document.getElementById("answers-container").innerHTML = `<p>Tu as eu ${score} sur ${selectedQuestions.length} bonnes réponses.</p>`;
+  document.getElementById("next-btn").style.display = "none";
+  document.getElementById("feedback-container").innerHTML = `<button class="btn" onclick="location.reload()">Rejouer</button>`;
 }
