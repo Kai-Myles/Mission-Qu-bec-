@@ -98,6 +98,27 @@ function showQuestion() {
   const q = selectedQuestions[questionIndex];
   document.getElementById("question-container").innerText = q.question;
 
+  // Shuffle answers here!
+  const shuffledAnswers = shuffleArray([...q.answers]);
+
+  const answersContainer = document.getElementById("answers-container");
+  answersContainer.innerHTML = "";
+
+  shuffledAnswers.forEach(ans => {
+    const btn = document.createElement("button");
+    btn.innerText = ans;
+    btn.onclick = () => selectAnswer(btn, ans === q.correct);
+    answersContainer.appendChild(btn);
+  });
+
+  document.getElementById("next-btn").disabled = true;
+  document.getElementById("feedback-container").innerText = "";
+  startTimer();
+}
+
+  const q = selectedQuestions[questionIndex];
+  document.getElementById("question-container").innerText = q.question;
+
   const answersContainer = document.getElementById("answers-container");
   answersContainer.innerHTML = "";
   q.answers.forEach(ans => {
