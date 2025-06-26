@@ -148,7 +148,7 @@ const questions = {
     { question: "Que portes-tu sur ta tête en hiver?", answers: ["une tuque", "un chapeau", "un manteau"], correct: "une tuque" },
     { question: "Comment s’appelle le professeur?", answers: ["Le professeur", "L’étudiant", "Le médecin"], correct: "Le professeur" },
     { question: "Quelle expression signifie « hello »?", answers: ["Bonjour", "Merci", "Au revoir"], correct: "Bonjour" },
-    { question: "Quel animal fait « meuh »?", answers: ["une vache", "un cheval", "un chien"], correct: "une vache" },
+    { question: "Quel animal fait « moo »?", answers: ["une vache", "un cheval", "un chien"], correct: "une vache" },
     { question: "Comment dit-on « to speak »?", answers: ["parler", "manger", "courir"], correct: "parler" },
     { question: "Comment s’appelle la boisson québécoise à base de sirop d’érable?", answers: ["la tire", "le thé", "le café"], correct: "la tire" }
   ],
