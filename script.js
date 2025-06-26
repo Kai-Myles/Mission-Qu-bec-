@@ -67,19 +67,19 @@ let timer;
 let timeLeft = 20;
 
 // Navigation entre pages
-function goToPage(pageId) {
+window.goToPage = function(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
-}
+};
 
 // Choisir nombre de questions
-function selectLevel(amount) {
+window.selectLevel = function(amount) {
   questionCount = amount;
   goToPage('difficulty-page');
-}
+};
 
 // Démarrer le jeu selon difficulté choisie
-function startGame(difficulty) {
+window.startGame = function(difficulty) {
   goToPage('game-page');
   selectedQuestions = [...questions[difficulty]];
   selectedQuestions = shuffleArray(selectedQuestions).slice(0, questionCount);
@@ -87,7 +87,7 @@ function startGame(difficulty) {
   score = 0;
   document.getElementById("next-btn").style.display = "inline-block";
   showQuestion();
-}
+};
 
 // Afficher question et réponses
 function showQuestion() {
@@ -178,6 +178,7 @@ function endGame() {
   document.getElementById("feedback-container").innerHTML = `<button class="btn" onclick="location.reload()">Rejouer</button>`;
 }
 
+// Mélanger tableau
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
