@@ -1,7 +1,139 @@
 // Force Safari to handle touch events better (fix iOS delay)
 document.addEventListener('touchstart', function() {}, false);
 
-// QUESTIONS (all 15 per difficulty level)
+// VARIABLES GLOBALES
+let selectedQuestions = [];
+let questionIndex = 0;
+let questionCount = 5;
+let score = 0;
+let timer;
+let timeLeft = 20;
+
+// === PAGE NAVIGATION ===
+window.goToPage = function(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+};
+
+// === CHOIX DU NOMBRE DE QUESTIONS ===
+window.selectLevel = function(amount) {
+  questionCount = amount;
+  goToPage('difficulty-page');
+};
+
+// === DEMARRER LE JEU AVEC DIFFICULTE ===
+window.startGame = function(difficulty) {
+  goToPage('game-page');
+  selectedQuestions = [...questions[difficulty]];
+  selectedQuestions = shuffleArray(selectedQuestions).slice(0, questionCount);
+  questionIndex = 0;
+  score = 0;
+  document.getElementById("next-btn").style.display = "inline-block";
+  showQuestion();
+};
+
+// === AFFICHER LA QUESTION ET LES REPONSES ===
+function showQuestion() {
+  clearInterval(timer);
+  timeLeft = 20;
+  updateTimer();
+
+  const q = selectedQuestions[questionIndex];
+  document.getElementById("question-container").innerText = q.question;
+
+  const answersContainer = document.getElementById("answers-container");
+  answersContainer.innerHTML = "";
+
+  // RANDOMIZE ORDER OF ANSWER BUTTONS
+  shuffleArray(q.answers).forEach(ans => {
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.innerText = ans;
+    btn.onclick = () => selectAnswer(btn, ans === q.correct);
+    answersContainer.appendChild(btn);
+  });
+
+  document.getElementById("next-btn").disabled = true;
+  document.getElementById("feedback-container").innerText = "";
+  startTimer();
+}
+
+// === SELECTION DE REPONSE ===
+function selectAnswer(button, isCorrect) {
+  clearInterval(timer);
+  const buttons = document.querySelectorAll("#answers-container button");
+  buttons.forEach(btn => btn.disabled = true);
+
+  if (isCorrect) {
+    button.style.backgroundColor = "#2ecc71";
+    document.getElementById("feedback-container").innerText = "Bonne réponse!";
+    score++;
+  } else {
+    button.style.backgroundColor = "#e74c3c";
+    document.getElementById("feedback-container").innerText = "Oups! Mauvaise réponse.";
+  }
+
+  document.getElementById("next-btn").disabled = false;
+}
+
+// === TIMER ===
+function startTimer() {
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      document.getElementById("feedback-container").innerText = "Temps écoulé!";
+      document.querySelectorAll("#answers-container button").forEach(btn => btn.disabled = true);
+      document.getElementById("next-btn").disabled = false;
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const timerEl = document.getElementById("timer");
+  timerEl.innerText = timeLeft;
+  timerEl.className = "timer";
+
+  if (timeLeft <= 5) {
+    timerEl.classList.add("red");
+  } else if (timeLeft <= 10) {
+    timerEl.classList.add("yellow");
+  } else {
+    timerEl.classList.add("green");
+  }
+}
+
+// === BOUTON SUIVANT ===
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("next-btn").addEventListener("click", () => {
+    questionIndex++;
+    if (questionIndex < selectedQuestions.length) {
+      showQuestion();
+    } else {
+      endGame();
+    }
+  });
+});
+
+// === FIN DU JEU ===
+function endGame() {
+  document.getElementById("question-container").innerHTML = `<h2>Bravo! 🎉</h2>`;
+  document.getElementById("answers-container").innerHTML = `<p>Tu as eu ${score} sur ${selectedQuestions.length} bonnes réponses.</p>`;
+  document.getElementById("next-btn").style.display = "none";
+  document.getElementById("feedback-container").innerHTML = `<button class="btn" onclick="location.reload()">Rejouer</button>`;
+}
+
+// === FONCTION POUR MELANGER UN TABLEAU ===
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// === QUESTIONS ===
 const questions = {
   facile: [
     { question: "Comment dit-on « cat » en français?", answers: ["chat", "chien", "oiseau"], correct: "chat" },
@@ -57,134 +189,3 @@ const questions = {
     { question: "Comment s’appelle la fête nationale du Québec?", answers: ["La Saint-Jean-Baptiste", "La fête du Canada", "Noël"], correct: "La Saint-Jean-Baptiste" }
   ]
 };
-
-// Global vars
-let selectedQuestions = [];
-let questionIndex = 0;
-let questionCount = 5;
-let score = 0;
-let timer;
-let timeLeft = 20;
-
-// ✅ Page navigation system
-function goToPage(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-}
-// ✅ Level selection
-window.selectLevel = function(amount) {
-  questionCount = amount;
-  goToPage('difficulty-page');
-};
-
-// ✅ Start game
-window.startGame = function(difficulty) {
-  goToPage('game-page');
-  selectedQuestions = [...questions[difficulty]];
-  selectedQuestions = shuffleArray(selectedQuestions).slice(0, questionCount);
-  questionIndex = 0;
-  score = 0;
-  document.getElementById("next-btn").style.display = "inline-block";
-  showQuestion();
-};
-
-// ✅ Show next question (shuffles answer button order)
-function showQuestion() {
-  clearInterval(timer);
-  timeLeft = 20;
-  updateTimer();
-
-  const q = selectedQuestions[questionIndex];
-  document.getElementById("question-container").innerText = q.question;
-
-  const answersContainer = document.getElementById("answers-container");
-  answersContainer.innerHTML = "";
-
-  const shuffledAnswers = shuffleArray([...q.answers]); // ✅ Randomize answer button order
-
-  shuffledAnswers.forEach(ans => {
-    const btn = document.createElement("button");
-    btn.innerText = ans;
-    btn.onclick = () => selectAnswer(btn, ans === q.correct);
-    answersContainer.appendChild(btn);
-  });
-
-  document.getElementById("next-btn").disabled = true;
-  document.getElementById("feedback-container").innerText = "";
-  startTimer();
-}
-
-// ✅ Answer click
-function selectAnswer(button, isCorrect) {
-  clearInterval(timer);
-  const buttons = document.querySelectorAll("#answers-container button");
-  buttons.forEach(btn => btn.disabled = true);
-
-  if (isCorrect) {
-    button.style.backgroundColor = "#2ecc71";
-    document.getElementById("feedback-container").innerText = "Bonne réponse!";
-    score++;
-  } else {
-    button.style.backgroundColor = "#e74c3c";
-    document.getElementById("feedback-container").innerText = "Oups! Mauvaise réponse.";
-  }
-
-  document.getElementById("next-btn").disabled = false;
-}
-
-// ✅ Timer countdown
-function startTimer() {
-  timer = setInterval(() => {
-    timeLeft--;
-    updateTimer();
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      document.getElementById("feedback-container").innerText = "Temps écoulé!";
-      document.querySelectorAll("#answers-container button").forEach(btn => btn.disabled = true);
-      document.getElementById("next-btn").disabled = false;
-    }
-  }, 1000);
-}
-
-function updateTimer() {
-  const timerEl = document.getElementById("timer");
-  timerEl.innerText = timeLeft;
-  timerEl.className = "timer";
-
-  if (timeLeft <= 5) {
-    timerEl.classList.add("red");
-  } else if (timeLeft <= 10) {
-    timerEl.classList.add("yellow");
-  } else {
-    timerEl.classList.add("green");
-  }
-}
-
-// ✅ Next button logic
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("next-btn").addEventListener("click", () => {
-    questionIndex++;
-    if (questionIndex < selectedQuestions.length) {
-      showQuestion();
-    } else {
-      endGame();
-    }
-  });
-});
-
-// ✅ End game
-function endGame() {
-  document.getElementById("question-container").innerHTML = `<h2>Bravo! 🎉</h2>`;
-  document.getElementById("answers-container").innerHTML = `<p>Tu as eu ${score} sur ${selectedQuestions.length} bonnes réponses.</p>`;
-  document.getElementById("next-btn").style.display = "none";
-  document.getElementById("feedback-container").innerHTML = `<button class="btn" onclick="location.reload()">Rejouer</button>`;
-}
-
-// ✅ Shuffle array helper
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
