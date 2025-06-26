@@ -89,7 +89,7 @@ window.startGame = function(difficulty) {
   showQuestion();
 };
 
-// Afficher question et réponses
+// ✅ Show question with randomized answer order
 function showQuestion() {
   clearInterval(timer);
   timeLeft = 20;
@@ -98,7 +98,7 @@ function showQuestion() {
   const q = selectedQuestions[questionIndex];
   document.getElementById("question-container").innerText = q.question;
 
-  // Shuffle answers here!
+  // 🎲 Shuffle answer order
   const shuffledAnswers = shuffleArray([...q.answers]);
 
   const answersContainer = document.getElementById("answers-container");
@@ -116,24 +116,7 @@ function showQuestion() {
   startTimer();
 }
 
-  const q = selectedQuestions[questionIndex];
-  document.getElementById("question-container").innerText = q.question;
-
-  const answersContainer = document.getElementById("answers-container");
-  answersContainer.innerHTML = "";
-  q.answers.forEach(ans => {
-    const btn = document.createElement("button");
-    btn.innerText = ans;
-    btn.onclick = () => selectAnswer(btn, ans === q.correct);
-    answersContainer.appendChild(btn);
-  });
-
-  document.getElementById("next-btn").disabled = true;
-  document.getElementById("feedback-container").innerText = "";
-  startTimer();
-}
-
-// Sélection d’une réponse
+// Handle answer click
 function selectAnswer(button, isCorrect) {
   clearInterval(timer);
   const buttons = document.querySelectorAll("#answers-container button");
@@ -151,7 +134,7 @@ function selectAnswer(button, isCorrect) {
   document.getElementById("next-btn").disabled = false;
 }
 
-// Timer décompte avec changement de couleur
+// Timer logic
 function startTimer() {
   timer = setInterval(() => {
     timeLeft--;
@@ -179,7 +162,7 @@ function updateTimer() {
   }
 }
 
-// Bouton suivant - gestion
+// Next question button
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("next-btn").addEventListener("click", () => {
     questionIndex++;
@@ -191,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Fin du jeu
+// End of game
 function endGame() {
   document.getElementById("question-container").innerHTML = `<h2>Bravo! 🎉</h2>`;
   document.getElementById("answers-container").innerHTML = `<p>Tu as eu ${score} sur ${selectedQuestions.length} bonnes réponses.</p>`;
@@ -199,11 +182,10 @@ function endGame() {
   document.getElementById("feedback-container").innerHTML = `<button class="btn" onclick="location.reload()">Rejouer</button>`;
 }
 
-// Mélanger tableau
+// ✅ Array shuffle utility
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
-}
