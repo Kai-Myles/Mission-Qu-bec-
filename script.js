@@ -67,11 +67,10 @@ let timer;
 let timeLeft = 20;
 
 // ✅ Page navigation system
-window.goToPage = function(pageId) {
+function goToPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
-};
-
+}
 // ✅ Level selection
 window.selectLevel = function(amount) {
   questionCount = amount;
