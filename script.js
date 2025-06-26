@@ -1,7 +1,7 @@
 // Force Safari to handle touch events better (fix iOS delay)
 document.addEventListener('touchstart', function() {}, false);
 
-// QUESTIONS (15 per difficulty)
+// QUESTIONS (all 15 per difficulty level)
 const questions = {
   facile: [
     { question: "Comment dit-on « cat » en français?", answers: ["chat", "chien", "oiseau"], correct: "chat" },
@@ -58,7 +58,7 @@ const questions = {
   ]
 };
 
-// Variables globales
+// Global vars
 let selectedQuestions = [];
 let questionIndex = 0;
 let questionCount = 5;
@@ -66,19 +66,19 @@ let score = 0;
 let timer;
 let timeLeft = 20;
 
-// Navigation entre pages
+// ✅ Page navigation system
 window.goToPage = function(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
 };
 
-// Choisir nombre de questions
+// ✅ Level selection
 window.selectLevel = function(amount) {
   questionCount = amount;
   goToPage('difficulty-page');
 };
 
-// Démarrer le jeu selon difficulté choisie
+// ✅ Start game
 window.startGame = function(difficulty) {
   goToPage('game-page');
   selectedQuestions = [...questions[difficulty]];
@@ -89,7 +89,7 @@ window.startGame = function(difficulty) {
   showQuestion();
 };
 
-// ✅ Show question with randomized answer order
+// ✅ Show next question (shuffles answer button order)
 function showQuestion() {
   clearInterval(timer);
   timeLeft = 20;
@@ -98,11 +98,10 @@ function showQuestion() {
   const q = selectedQuestions[questionIndex];
   document.getElementById("question-container").innerText = q.question;
 
-  // 🎲 Shuffle answer order
-  const shuffledAnswers = shuffleArray([...q.answers]);
-
   const answersContainer = document.getElementById("answers-container");
   answersContainer.innerHTML = "";
+
+  const shuffledAnswers = shuffleArray([...q.answers]); // ✅ Randomize answer button order
 
   shuffledAnswers.forEach(ans => {
     const btn = document.createElement("button");
@@ -116,7 +115,7 @@ function showQuestion() {
   startTimer();
 }
 
-// Handle answer click
+// ✅ Answer click
 function selectAnswer(button, isCorrect) {
   clearInterval(timer);
   const buttons = document.querySelectorAll("#answers-container button");
@@ -134,7 +133,7 @@ function selectAnswer(button, isCorrect) {
   document.getElementById("next-btn").disabled = false;
 }
 
-// Timer logic
+// ✅ Timer countdown
 function startTimer() {
   timer = setInterval(() => {
     timeLeft--;
@@ -162,7 +161,7 @@ function updateTimer() {
   }
 }
 
-// Next question button
+// ✅ Next button logic
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("next-btn").addEventListener("click", () => {
     questionIndex++;
@@ -174,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// End of game
+// ✅ End game
 function endGame() {
   document.getElementById("question-container").innerHTML = `<h2>Bravo! 🎉</h2>`;
   document.getElementById("answers-container").innerHTML = `<p>Tu as eu ${score} sur ${selectedQuestions.length} bonnes réponses.</p>`;
@@ -182,10 +181,11 @@ function endGame() {
   document.getElementById("feedback-container").innerHTML = `<button class="btn" onclick="location.reload()">Rejouer</button>`;
 }
 
-// ✅ Array shuffle utility
+// ✅ Shuffle array helper
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
